@@ -44,8 +44,7 @@ Aktifkan environment Python yang akan digunakan, kemudian instal Ultralytics:
 pip install ultralytics
 ```
 
-Pastikan PyTorch dan dependensi lainnya terpasang sesuai environment yang digunakan.
-Eksperimen pada proyek ini dilakukan menggunakan CPU.
+Pastikan PyTorch dan dependensi lainnya terpasang sesuai environment yang digunakan. Eksperimen pada proyek ini dilakukan menggunakan CPU.
 
 ### Persiapan Dataset
 
