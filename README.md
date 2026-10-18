@@ -15,6 +15,31 @@ Praktikum ini menerapkan YOLO26n untuk mendeteksi dua objek: MG90S Servo Motor d
 - Test: 15 gambar
 - Kelas: `MG90S` dan `PCA9685`
 
+## Instalasi dan Penggunaan
+
+### Persyaratan
+
+- Python
+- pip
+- PyTorch
+- Ultralytics YOLO
+
+### Instalasi Dependensi
+
+Buka terminal pada folder proyek, kemudian jalankan:
+
+```bash
+pip install ultralytics
+```
+
+Pastikan PyTorch dan dependensi lain telah terpasang sesuai environment yang digunakan.
+
+### Menjalankan Proyek
+
+Script pemrosesan dataset dan pelatihan tersedia di folder `scripts/`. Periksa argumen dan konfigurasi di setiap script sebelum menjalankannya, serta pastikan lokasi dataset sudah sesuai dengan struktur folder lokal.
+
+Model hasil pelatihan dan artefak eksperimen tersedia di folder `eksperimen/`.
+
 ## Eksperimen
 
 ### E1 — Baseline
@@ -66,4 +91,14 @@ Test set berisi 15 gambar. Hasil perlu ditafsirkan dengan mempertimbangkan ukura
 
 ## Kesimpulan
 E3 memperoleh mAP50-95 validation sebesar 0.886, lebih tinggi daripada E1 sebesar 0.852. E3 menjadi kandidat model final berdasarkan validation, dengan waktu inferensi yang lebih lama. Pada test set, E3 memperoleh mAP50-95 sebesar 0.8774.
+
+## Keterbatasan
+
+Test set terdiri dari 15 gambar sehingga hasil evaluasi perlu ditafsirkan secara hati-hati. Pengujian pada dataset yang lebih besar dan lebih bervariasi diperlukan untuk menilai kemampuan generalisasi model secara lebih kuat.
+
+## Catatan Dataset
+
+Repository ini menyimpan konfigurasi dan dokumentasi dataset, tetapi tidak menyertakan seluruh gambar dan label. Dataset perlu disiapkan secara terpisah sebelum menjalankan ulang pelatihan atau evaluasi.
+
+Konfigurasi dataset tersedia di `data_proyek/data.yaml`. Sesuaikan path dataset dengan lokasi penyimpanan di komputer yang digunakan.
 
