@@ -2,7 +2,7 @@
 
 ## Identitas Mahasiswa
 - **NIM:** 4222411001
-- **Nama:** Hafis Maulana
+- **Nama:** HAFIS MAULANA SAPUTRA
 - **Mata Kuliah:** RET503
 
 ## Deskripsi
@@ -66,3 +66,4 @@ Test set berisi 15 gambar. Hasil perlu ditafsirkan dengan mempertimbangkan ukura
 
 ## Kesimpulan
 E3 memperoleh mAP50-95 validation sebesar 0.886, lebih tinggi daripada E1 sebesar 0.852. E3 menjadi kandidat model final berdasarkan validation, dengan waktu inferensi yang lebih lama. Pada test set, E3 memperoleh mAP50-95 sebesar 0.8774.
+
