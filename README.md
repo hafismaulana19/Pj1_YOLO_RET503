@@ -1,91 +1,92 @@
-# Hasil Eksperimen YOLO — Humanoid Soccer
+# Humanoid Soccer — YOLO Object Detection
 
-## 1. Dataset
+Repositori praktikum RET503 untuk deteksi objek **Humanoid Soccer** menggunakan YOLO26n pretrained.
 
-Dataset yang digunakan adalah kumpulan gambar **Humanoid Soccer** dari bagian `reality`, yaitu gambar dalam kondisi dunia nyata. Pada praktikum ini digunakan tiga kelas objek:
+## Ringkasan Proyek
 
-- `ball`
-- `robot`
-- `goalpost`
+- **Dataset:** gambar kondisi nyata (*reality*) dari dataset sumber bit-bots
+- **Subset eksperimen:** 200 gambar
+- **Kelas:** `ball`, `robot`, `goalpost`
+- **Pembagian:** 140 train, 40 validation, 20 test
+- **Model:** YOLO26n pretrained
+- **Eksperimen:** E1 (imgsz 416) dan E3 (imgsz 640)
+- **Perangkat pelatihan:** CPU
 
-Subset dataset berjumlah 200 gambar dengan pembagian berikut:
+## Hasil Visual Eksperimen
 
-| Pembagian | Jumlah gambar |
-|---|---:|
-| Train | 140 |
-| Validation | 40 |
-| Test | 20 |
-| **Total** | **200** |
+### E1 — Input 416 px
 
-Jumlah data test adalah 20 gambar dengan total 38 objek berlabel.
+![E1 training results](<Eksperimen E1 dan E3/E1/results.png>)
 
-## 2. Eksperimen E1 — Baseline
+Contoh prediksi validasi E1:
 
-E1 digunakan sebagai eksperimen baseline.
+![E1 validation predictions](<Eksperimen E1 dan E3/E1/val_batch0_pred.jpg>)
 
-- Model: YOLO26n pretrained
-- Ukuran input: 416 piksel
-- Epoch maksimum: 100
-- Perangkat: CPU
+### E3 — Input 640 px
 
-### Hasil validasi E1
+![E3 training results](<Eksperimen E1 dan E3/E3/results.png>)
 
-| Metrik | Nilai |
-|---|---:|
-| Precision | 0.9109 |
-| Recall | 0.7609 |
-| mAP50 | 0.8200 |
-| mAP50–95 | 0.5754 |
-| Waktu inferensi per gambar | 10.88 ms |
+Contoh prediksi validasi E3:
 
-## 3. Eksperimen E3 — Perubahan Ukuran Input
+![E3 validation predictions](<Eksperimen E1 dan E3/E3/val_batch0_pred.jpg>)
 
-E3 menggunakan model dan pengaturan dasar yang sama dengan E1, dengan perubahan ukuran input dari 416 menjadi 640 piksel.
+## Ringkasan Metrik
 
-- Model: YOLO26n pretrained
-- Ukuran input: 640 piksel
-- Epoch maksimum: 100
-- Perangkat: CPU
+### Validasi
 
-### Hasil validasi E3
+| Metrik | E1 · 416 px | E3 · 640 px |
+|---|---:|---:|
+| Precision | 0.9109 | 0.8902 |
+| Recall | 0.7609 | 0.8283 |
+| mAP50 | 0.8200 | 0.8686 |
+| mAP50–95 | 0.5754 | 0.6252 |
+| Inferensi per gambar | 10.88 ms | 24.18 ms |
+| Waktu pelatihan | 24.59 menit | 57.40 menit |
 
-| Metrik | Nilai |
-|---|---:|
-| Precision | 0.8902 |
-| Recall | 0.8283 |
-| mAP50 | 0.8686 |
-| mAP50–95 | 0.6252 |
-| Waktu inferensi per gambar | 24.18 ms |
+### Test
 
-Pada data validasi, E3 menghasilkan recall, mAP50, dan mAP50–95 yang lebih tinggi daripada E1. Namun, precision E3 lebih rendah dan waktu inferensinya lebih lama.
-
-## 4. Hasil Evaluasi pada Data Test
-
-Kedua eksperimen dievaluasi secara terpisah menggunakan subset test yang sama, yang terdiri dari 20 gambar dan 38 objek.
-
-| Metrik | E1 (416 piksel) | E3 (640 piksel) |
+| Metrik | E1 · 416 px | E3 · 640 px |
 |---|---:|---:|
 | Precision | 0.8990 | 0.8394 |
 | Recall | 0.8080 | 0.7333 |
 | mAP50 | 0.8723 | 0.7436 |
 | mAP50–95 | 0.5886 | 0.5495 |
-| Waktu inferensi per gambar | 10.6 ms | 22.9 ms |
+| Inferensi per gambar | 10.6 ms | 22.9 ms |
 
-### Analisis hasil test
+Pada validasi, E3 memperoleh recall, mAP50, dan mAP50–95 lebih tinggi, tetapi lebih lambat. Pada test subset, E1 memperoleh nilai lebih tinggi di semua metrik deteksi yang dicatat dan inferensi yang lebih cepat. Perlu diperhatikan bahwa test hanya berisi 20 gambar (38 objek), sehingga hasil ini terbatas pada subset praktikum dan bukan jaminan performa pada semua kondisi.
 
-Pada subset test yang digunakan, E1 memperoleh nilai precision, recall, mAP50, dan mAP50–95 lebih tinggi dibandingkan E3. E1 juga memiliki waktu inferensi per gambar yang lebih singkat.
+## Menyiapkan Dataset
 
-Hasil test ini berbeda dari hasil validasi, ketika E3 memperoleh nilai recall, mAP50, dan mAP50–95 yang lebih tinggi. Perbedaan tersebut menunjukkan bahwa hasil validasi tidak selalu mencerminkan hasil pada data test. Ukuran input yang lebih besar juga tidak otomatis menghasilkan performa yang lebih baik pada data yang belum digunakan saat pelatihan.
+Dataset disimpan di folder `dataset/` pada repositori. File konfigurasi dataset tersedia di `dataset/data.yaml`.
 
-## 5. Kesimpulan
+Sumber dataset: [bit-bots/TORSO_21_dataset](https://github.com/bit-bots/TORSO_21_dataset). Nama proyek ini **Humanoid Soccer**; TORSO_21_dataset hanya dicantumkan sebagai sumber data. Pastikan mematuhi lisensi dan ketentuan atribusi dataset sumber.
 
-Eksperimen membandingkan YOLO26n pretrained dengan ukuran input 416 piksel pada E1 dan 640 piksel pada E3. E3 memperoleh hasil lebih tinggi pada beberapa metrik validasi, yaitu recall, mAP50, dan mAP50–95. Namun, pada data test, E1 unggul pada seluruh metrik performa yang dicatat dan memiliki waktu inferensi yang lebih singkat.
+## Menjalankan Proyek
 
-Berdasarkan hasil pada subset test ini, E1 merupakan pilihan yang lebih baik apabila mempertimbangkan kualitas deteksi dan kecepatan inferensi secara bersamaan. Kesimpulan tetap terbatas pada konfigurasi eksperimen dan subset test yang hanya berisi 20 gambar, sehingga diperlukan evaluasi pada data yang lebih banyak untuk menilai generalisasi model dengan lebih kuat.
+Pasang dependensi utama:
 
-## 6. Struktur Dokumentasi
+```bash
+python -m pip install ultralytics opencv-python pyyaml
+```
 
-- `E1/`: grafik hasil pelatihan, confusion matrix, file CSV, dan contoh prediksi E1.
-- `E3/`: grafik hasil pelatihan, confusion matrix, file CSV, dan contoh prediksi E3.
+Alur kerja dari root repositori:
 
-Dokumentasi memuat metrik validasi serta evaluasi test untuk membandingkan kedua eksperimen.
+1. Periksa anotasi: `python scripts/01_cek_anotasi.py dataset`.
+2. Latih E1 dan E3: `python scripts/06_latih_E1_E3.py --nim 4222411001 --nama "HAFIS MAULANA SAPUTRA" --data dataset/data.yaml --device cpu`.
+3. Evaluasi test menggunakan `scripts/07_evaluasi_test.py` setelah bobot model terbaik tersedia.
+
+Dataset, bobot model, cache, dan keluaran training disimpan lokal sesuai pengaturan Git. Lihat [dokumentasi eksperimen lengkap](<Eksperimen E1 dan E3/README.md>) dan tabel CSV di folder `laporan/`.
+
+## Struktur Repositori
+
+- `data_proyek/` — konfigurasi dan panduan dataset
+- `dataset/` — gambar, label, dan konfigurasi dataset
+- `scripts/` — persiapan data, pengecekan anotasi, pelatihan, dan evaluasi
+- `Eksperimen E1 dan E3/` — grafik eksperimen dan contoh prediksi E1/E3
+- `laporan/` — ringkasan metrik CSV/TXT
+
+## Identitas Praktikum
+
+- **Mata kuliah:** RET503
+- **NIM:** 4222411001
+- **Nama:** HAFIS MAULANA SAPUTRA
