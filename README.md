@@ -61,7 +61,6 @@ Pj1_YOLO_RET503/
 ├── .gitignore               # Aturan file lokal yang tidak dilacak Git
 └── README.md                # Dokumentasi utama
 ```
-
 ## Isi Folder
 
 - **`dataset/`** — gambar, anotasi, dan konfigurasi dataset yang digunakan.
