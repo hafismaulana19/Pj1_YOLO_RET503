@@ -26,6 +26,28 @@ File hasil praktik:
 - [Laporan teks E1 dan E3](Laporan/hasil_praktik_4222411001_E1_E3_final.txt)
 - [CSV hasil evaluasi test](Laporan/hasil_test_humanoid_soccer.csv)
 
+## Analisis Hasil
+
+Berdasarkan metrik validasi pada dua eksperimen, E3 (`imgsz=640`) menghasilkan nilai `mAP50` sebesar 0.8686 dan `mAP50-95` sebesar 0.6252, lebih tinggi dibanding E1 (`imgsz=416`) yang masing-masing memperoleh 0.8200 dan 0.5754. Recall E3 juga lebih tinggi, yaitu 0.8283 dibanding 0.7609. Sebaliknya, E1 memperoleh precision lebih tinggi (0.9109 dibanding 0.8902), waktu inferensi lebih singkat (10.88 ms dibanding 24.18 ms), dan waktu pelatihan lebih singkat (24.59 menit dibanding 57.40 menit).
+
+Hasil ini menunjukkan kompromi antara kualitas deteksi validasi dan kecepatan komputasi: E3 unggul pada mAP dan recall validasi, sedangkan E1 lebih cepat dan memiliki precision lebih tinggi.
+
+## Hasil Evaluasi Test
+
+Evaluasi pada split test dilakukan terhadap 20 gambar yang memuat 38 objek berlabel.
+
+| Metrik Test | E1 · 416 px | E3 · 640 px |
+|---|---:|---:|
+| Precision | 0.8990 | 0.8394 |
+| Recall | 0.8080 | 0.7333 |
+| mAP50 | 0.8723 | 0.7436 |
+| mAP50-95 | 0.5886 | 0.5495 |
+| Inferensi per gambar | 10.6 ms | 22.9 ms |
+
+Pada subset test ini, E1 memperoleh nilai lebih tinggi pada seluruh metrik deteksi yang dicatat dan memiliki waktu inferensi lebih rendah. Karena jumlah test hanya 20 gambar dan 38 objek, hasil ini perlu dipahami sebagai evaluasi terbatas pada subset praktikum, bukan jaminan kinerja pada seluruh kondisi pertandingan atau lingkungan nyata.
+
+Data lengkap tersedia di [CSV hasil evaluasi test](Laporan/hasil_test_humanoid_soccer.csv).
+
 ## Hasil Eksperimen
 
 ### E1 — Input 416 px
