@@ -1,6 +1,5 @@
-# Dataset gambar/anotasi dan unduhan lokal
+﻿# Dataset gambar/anotasi dan unduhan lokal
 dataset_yolo/
-dataset_humanoid_soccer/
 dataset_v1*/
 dataset_yolo_v*/
 coco_unduhan/
