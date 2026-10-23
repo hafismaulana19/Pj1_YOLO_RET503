@@ -1,83 +1,84 @@
-# Dataset Humanoid Soccer — TORSO-21 Real-World
+# Panduan Dataset Humanoid Soccer
 
 ## Tujuan
-Praktikum Pj1 menggunakan citra nyata dari kamera robot pada domain RoboCup Humanoid Soccer. Dataset sumber adalah [TORSO-21](https://github.com/bit-bots/TORSO_21_dataset), khusus koleksi `reality`, bukan koleksi `simulation`.
 
-## Kelas subset
-Skrip persiapan memilih tiga kelas yang tersedia dalam anotasi TORSO-21:
-- `0: ball`
-- `1: robot`
-- `2: goalpost`
+Panduan ini menjelaskan cara menyiapkan subset citra kondisi nyata (*reality*) untuk deteksi tiga kelas: `ball`, `robot`, dan `goalpost`. Dataset gambar dan anotasi disimpan secara lokal, bukan di repositori Git.
 
-Subset awal ditargetkan maksimal 200 gambar berlabel. Jumlah aktual dan jumlah bounding box per kelas dicatat oleh skrip saat dijalankan; jangan menulis angka hasil sebelum proses benar-benar selesai.
+## Struktur keluaran
 
-## Mengunduh dataset sumber
+Setelah semua langkah selesai, struktur lokal yang diharapkan adalah:
 
-Unduhan koleksi real-world train cukup besar (dokumentasi resmi memperkirakan sekitar 10 GB). Pastikan ruang disk tersedia. Jangan mengunggah arsip dataset penuh ke repositori praktikum.
+```text
+dataset_humanoid_soccer/
+├── data.yaml
+├── images/
+│   ├── train/  # 140 gambar
+│   ├── val/    # 40 gambar
+│   └── test/   # 20 gambar
+└── labels/
+    ├── train/
+    ├── val/
+    └── test/
+```
 
-1. Clone repositori dataset resmi di luar folder repositori praktikum:
+Subset eksperimen berisi 200 gambar: 140 train, 40 validation, dan 20 test. Data test berisi 38 objek berlabel. Gambar dan label tidak di-commit ke GitHub.
 
-   ```bash
-   git clone https://github.com/bit-bots/TORSO_21_dataset.git
-   cd TORSO_21_dataset
-   ```
+## 1. Siapkan sumber gambar dan anotasi
 
-2. Unduh citra koleksi real-world train:
+Gunakan dataset Humanoid Soccer real-world/reality yang tersedia melalui [repositori sumber bit-bots](https://github.com/bit-bots/TORSO_21_dataset). Ikuti petunjuk pengunduhan resmi pada repositori sumber dan pastikan folder berikut tersedia di komputer:
 
-   ```bash
-   python scripts/download_dataset.py --real --train
-   ```
-
-3. Unduh file anotasi untuk koleksi yang sama:
-
-   ```bash
-   python scripts/download_dataset.py --real --train --annotations
-   ```
-
-Setelah selesai, pastikan dua path berikut ada:
 - `data/reality/train/images/`
 - `data/reality/train/annotations.yaml`
 
-Dokumentasi resmi juga menyediakan unduhan manual di https://data.bit-bots.de/TORSO-21/.
+Simpan hasil unduhan di luar folder repositori praktikum agar tidak ikut terunggah ke Git.
 
-## Membuat subset berlabel YOLO
-
-Jalankan skrip dari root repositori praktikum. Sesuaikan path `--source` dengan lokasi clone TORSO-21:
+## 2. Pasang dependensi
 
 ```bash
-python -m pip install pyyaml
-python scripts/00_preparasi_torso21.py --source ../TORSO_21_dataset/data/reality/train --jumlah 200 --out dataset_yolo
+python -m pip install pyyaml opencv-python ultralytics
 ```
 
-Skrip menyalin gambar yang dipilih, mengubah bounding box TORSO-21 dari dua titik piksel menjadi format YOLO ternormalisasi `class_id cx cy width height`, dan membuat `classes.txt`. Gambar tanpa objek dari tiga kelas yang dipilih tidak dimasukkan dalam subset ini.
+## 3. Buat subset YOLO
 
-## Validasi anotasi dan pembagian data
+Dari root repositori praktikum, ganti nilai `--source` agar mengarah ke folder `reality/train` di komputer:
 
-1. Jalankan pemeriksaan anotasi:
+```bash
+python scripts/00_preparasi_humanoid_soccer.py --source "../TORSO_21_dataset/data/reality/train" --jumlah 200 --seed 42 --out dataset_yolo
+```
 
-   ```bash
-   python scripts/01_cek_anotasi.py dataset_yolo
-   ```
+Skrip memilih gambar yang memuat setidaknya satu objek dari tiga kelas yang digunakan, lalu mengubah koordinat kotak anotasi menjadi format YOLO ternormalisasi. Jika lokasi sumber berbeda, ubah nilai `--source`.
 
-2. Buka gambar hasil anotasi visual dalam `dataset_yolo/cek_visual/` dan pastikan kotak benar-benar mengelilingi objek.
+## 4. Periksa anotasi
 
-3. Setelah pemeriksaan bersih, bagi subset dengan skrip praktikum:
+```bash
+python scripts/01_cek_anotasi.py dataset_yolo
+```
 
-   ```bash
-   python scripts/05_split_dataset_yolo.py dataset_yolo dataset_v1
-   ```
+Periksa laporan terminal dan gambar ber-kotak yang dihasilkan di `dataset_yolo/cek_visual/`. Pastikan tidak ada file label hilang dan kotak benar-benar mengelilingi objek. Tinjau secara manual peringatan tentang kotak sangat kecil karena sebagian objek dapat terlihat tipis pada citra.
 
-Skrip pembagian membuat split 70% train, 20% validation, dan 10% test serta file `dataset_v1/data.yaml`.
+## 5. Bagi dataset
 
-## Reproduksibilitas dan batasan
+Setelah anotasi diperiksa:
 
-- Dataset gambar dan label hasil ekstraksi tidak disimpan di GitHub. Simpan dataset lokal dan gunakan skrip untuk membangunnya ulang.
-- Subset diambil dari koleksi `reality/train`, lalu dibagi secara acak untuk kebutuhan praktikum. Karena itu, bagian test pada subset ini **bukan** official TORSO-21 test set.
-- Gunakan seed yang sama untuk menghasilkan subset yang dapat direproduksi.
-- Periksa lisensi dan sertakan sitasi TORSO-21 saat melaporkan hasil.
+```bash
+python scripts/05_split_dataset_yolo.py dataset_yolo dataset_humanoid_soccer
+```
 
-## Sitasi dataset
+Skrip memakai seed tetap dan pembagian 70%/20%/10%, sehingga 200 gambar terbagi menjadi 140 train, 40 validation, dan 20 test. File `dataset_humanoid_soccer/data.yaml` dibuat otomatis oleh skrip.
 
-Bestmann, M., Engelke, T., Fiedler, N., Güldenstein, J., Gutsche, J., Hagge, J., & Vahl, F. (2021). *TORSO-21 Dataset: Typical Objects in RoboCup Soccer 2021*. RoboCup 2021: Robot World Cup XXIV. https://doi.org/10.1007/978-3-030-98682-7_6
+## 6. Validasi konfigurasi
 
-Sumber dataset dan petunjuk resmi: https://github.com/bit-bots/TORSO_21_dataset
+File `data_proyek/data.yaml` adalah contoh konfigurasi yang dapat dibaca di repositori; skrip pelatihan sebaiknya menggunakan file yang dibuat bersama dataset lokal: `dataset_humanoid_soccer/data.yaml`. Pastikan kelas berurutan sebagai berikut:
+
+| ID | Kelas |
+|---:|---|
+| 0 | ball |
+| 1 | robot |
+| 2 | goalpost |
+
+## Catatan penting
+
+- Jangan commit folder dataset, arsip unduhan, cache, bobot model, atau hasil pelatihan berukuran besar.
+- Split test adalah subset praktikum yang diturunkan dari bagian reality, bukan test set resmi dataset sumber.
+- Jangan mengubah hasil metrik menjadi klaim generalisasi luas karena ukuran test hanya 20 gambar.
+- Berikan atribusi dan patuhi lisensi dataset sumber jika hasil ini dibagikan atau dipublikasikan.

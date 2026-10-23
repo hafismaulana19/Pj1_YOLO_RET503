@@ -1,17 +1,14 @@
-==========================================================================================
-PRAKTIK TERPADU MINGGU 4-7 - RET503
-==========================================================================================
+======================================================================================
+HASIL EKSPERIMEN YOLO — HUMANOID SOCCER
+======================================================================================
 NIM / Nama    : 4222411001 / HAFIS MAULANA SAPUTRA
-Waktu         : 18-10-2026 16:18:54
-Komputer/user : LAPTOP-64L9TETQ / VICTUS
-Dataset       : dataset_v1
-Sidik jari    : 9E37F0E7D563
-Pengaturan    : model yolo26n, epochs 100, imgsz 416, batch 4, device cpu
-==========================================================================================
-Eksperimen        Perubahan          mAP50   mAP50-95       P       R      ms    menit
-E1_final          -                  0.995      0.852   0.995   1.000    13.9      9.6
-E3_final          imgsz=640          0.995      0.886   0.996   1.000    25.1     38.6
-==========================================================================================
-Pemilihan model dilakukan berdasarkan mAP50-95 pada data validasi.
-Evaluasi TEST dilakukan terpisah setelah model final ditentukan.
-==========================================================================================
+Dataset       : Humanoid Soccer, real-world subset
+Jumlah data   : 200 gambar (140 train, 40 validation, 20 test)
+Kelas         : ball, robot, goalpost
+Model         : YOLO26n pretrained | epoch maksimum 100 | device CPU
+======================================================================================
+Eksperimen        imgsz     mAP50   mAP50-95        P        R       ms    menit
+E1_final            416    0.8200      0.5754   0.9109   0.7609    10.88    24.59
+E3_final            640    0.8686      0.6252   0.8902   0.8283    24.18    57.40
+======================================================================================
+Metrik validasi. Hasil evaluasi test dicatat pada hasil_test_humanoid_soccer.csv.

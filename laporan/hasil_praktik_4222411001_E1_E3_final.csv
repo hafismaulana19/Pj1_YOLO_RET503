@@ -1,3 +1,3 @@
 eksperimen,perubahan,pretrained,mAP50,mAP50-95,precision,recall,inferensi_ms,waktu_latih_menit,imgsz,bobot
-E1_final,-,True,0.995,0.8517,0.9946,1.0,13.87,9.57,416,C:\Users\VICTUS\Downloads\Pj1_YOLO_RET503\hasil_praktik\E1_final\weights\best.pt
-E3_final,imgsz=640,True,0.995,0.8858,0.9961,1.0,25.13,38.62,640,C:\Users\VICTUS\Downloads\Pj1_YOLO_RET503\hasil_praktik\E3_final\weights\best.pt
+E1_final,-,True,0.8200,0.5754,0.9109,0.7609,10.88,24.59,416,hasil_praktik/E1_final/weights/best.pt
+E3_final,imgsz=640,True,0.8686,0.6252,0.8902,0.8283,24.18,57.40,640,hasil_praktik/E3_final/weights/best.pt
