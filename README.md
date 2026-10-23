@@ -148,13 +148,3 @@ python Scripts/07_evaluasi_test.py --data dataset/data.yaml --e1 path/ke/E1/best
 ```
 
 Bobot model, cache, dan output training disimpan lokal dan tidak perlu di-commit.
-
-## Catatan Dataset
-
-Nama proyek adalah **Humanoid Soccer**; TORSO_21_dataset merupakan sumber data. Patuhi lisensi dan ketentuan atribusi dari repository sumber. Split test adalah subset praktikum, bukan test set resmi sumber data.
-
-## Identitas Praktikum
-
-- **Mata kuliah:** RET503
-- **NIM:** 4222411001
-- **Nama:** HAFIS MAULANA SAPUTRA
