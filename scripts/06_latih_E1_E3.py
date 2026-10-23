@@ -1,5 +1,4 @@
-
-"""Praktik RET503: eksperimen YOLO E1 dan E3 menggunakan CPU."""
+"""Latih dan evaluasi validasi untuk eksperimen E1 dan E3 menggunakan YOLO26n."""
 import argparse
 import csv
 import getpass
@@ -11,176 +10,141 @@ from pathlib import Path
 
 from ultralytics import YOLO
 
-p = argparse.ArgumentParser()
-p.add_argument("--nim", required=True)
-p.add_argument("--nama", required=True)
-p.add_argument("--data", default="dataset_v1/data.yaml")
-p.add_argument("--model", default="yolo26n")
-p.add_argument("--epochs", type=int, default=100)
-p.add_argument("--imgsz", type=int, default=416)
-p.add_argument("--batch", type=int, default=4)
-p.add_argument("--patience", type=int, default=20)
-p.add_argument("--device", default="cpu")
-p.add_argument("--ubah", default="imgsz=640")
-args = p.parse_args()
+parser = argparse.ArgumentParser(description=__doc__)
+parser.add_argument("--nim", required=True)
+parser.add_argument("--nama", required=True)
+parser.add_argument("--data", default="dataset_humanoid_soccer/data.yaml")
+parser.add_argument("--model", default="yolo26n")
+parser.add_argument("--epochs", type=int, default=100)
+parser.add_argument("--imgsz", type=int, default=416)
+parser.add_argument("--batch", type=int, default=4)
+parser.add_argument("--patience", type=int, default=20)
+parser.add_argument("--device", default="cpu")
+parser.add_argument("--ubah", default="imgsz=640", help="Parameter E3 yang diubah, format key=value")
+args = parser.parse_args()
 
-kunci, nilai = args.ubah.split("=", 1)
+key, value = args.ubah.split("=", 1)
 try:
-    nilai = int(nilai)
+    value = int(value)
 except ValueError:
     try:
-        nilai = float(nilai)
+        value = float(value)
     except ValueError:
         pass
 
-DATA = Path(args.data)
-if not DATA.exists():
-    raise SystemExit(
-        f"{DATA} tidak ditemukan. Periksa lokasi dataset terlebih dahulu."
-    )
+data_yaml = Path(args.data)
+if not data_yaml.is_file():
+    raise SystemExit(f"File konfigurasi tidak ditemukan: {data_yaml}. Siapkan dataset lebih dulu.")
 
-PROJECT = Path("hasil_praktik").resolve()
-
-
-def sidik_jari_dataset(root):
-    h = hashlib.sha256()
-    for f in sorted((root / "labels").rglob("*.txt")):
-        h.update(f.read_bytes())
-    return h.hexdigest()[:12].upper()
+project_dir = Path("hasil_praktik").resolve()
+report_dir = Path("laporan")
+report_dir.mkdir(parents=True, exist_ok=True)
 
 
-def latih(nama, model_file, pretrained, **ubah):
-    cfg = dict(
-        data=str(DATA),
-        epochs=args.epochs,
-        patience=args.patience,
-        imgsz=args.imgsz,
+def dataset_fingerprint(dataset_root):
+    digest = hashlib.sha256()
+    label_root = dataset_root / "labels"
+    for label_file in sorted(label_root.rglob("*.txt")):
+        digest.update(label_file.read_bytes())
+    return digest.hexdigest()[:12].upper()
+
+
+def train_experiment(name, model_file, pretrained, **changes):
+    config = {
+        "data": str(data_yaml.resolve()),
+        "epochs": args.epochs,
+        "patience": args.patience,
+        "imgsz": args.imgsz,
+        "batch": args.batch,
+        "device": args.device,
+        "seed": 0,
+        "deterministic": True,
+        "project": str(project_dir),
+        "name": name,
+        "exist_ok": False,
+        "pretrained": pretrained,
+        "plots": True,
+        "verbose": False,
+    }
+    config.update(changes)
+    print(f"\n=== {name} ===")
+    print(f"Model: {model_file} | imgsz={config['imgsz']} | device={args.device}")
+
+    model = YOLO(model_file)
+    start = time.time()
+    model.train(**config)
+    training_minutes = (time.time() - start) / 60
+
+    best_weights = Path(model.trainer.save_dir) / "weights" / "best.pt"
+    if not best_weights.is_file():
+        raise FileNotFoundError(f"Bobot terbaik tidak ditemukan: {best_weights}")
+
+    metrics = YOLO(str(best_weights)).val(
+        data=str(data_yaml.resolve()),
+        split="val",
+        imgsz=config["imgsz"],
         batch=args.batch,
         device=args.device,
-        seed=0,
-        deterministic=True,
-        project=str(PROJECT),
-        name=nama,
-        exist_ok=False,
-        pretrained=pretrained,
         plots=True,
         verbose=False,
     )
-    cfg.update(ubah)
-
-    print(
-        f"\n=== {nama} ===\n"
-        f"Model: {model_file} | pretrained={pretrained}\n"
-        f"Perangkat: {args.device} | imgsz={cfg['imgsz']}\n"
-        f"Epochs: {cfg['epochs']} | batch={cfg['batch']}"
-    )
-
-    model = YOLO(model_file)
-    t0 = time.time()
-    model.train(**cfg)
-    menit = (time.time() - t0) / 60
-
-    best = Path(model.trainer.save_dir) / "weights" / "best.pt"
-    if not best.exists():
-        raise FileNotFoundError(f"Bobot terbaik tidak ditemukan: {best}")
-
-    m = YOLO(str(best)).val(
-        data=str(DATA),
-        split="val",
-        imgsz=cfg["imgsz"],
-        batch=args.batch,
-        device=args.device,
-        plots=False,
-        verbose=False,
-    )
-
     return {
-        "eksperimen": nama,
-        "perubahan": ", ".join(
-            f"{k}={v}" for k, v in ubah.items()
-        ) or "-",
+        "eksperimen": name,
+        "perubahan": ", ".join(f"{key}={val}" for key, val in changes.items()) or "-",
         "pretrained": pretrained,
-        "mAP50": round(m.box.map50, 4),
-        "mAP50-95": round(m.box.map, 4),
-        "precision": round(m.box.mp, 4),
-        "recall": round(m.box.mr, 4),
-        "inferensi_ms": round(m.speed["inference"], 2),
-        "waktu_latih_menit": round(menit, 2),
-        "imgsz": cfg["imgsz"],
-        "bobot": str(best),
+        "mAP50": round(metrics.box.map50, 4),
+        "mAP50-95": round(metrics.box.map, 4),
+        "precision": round(metrics.box.mp, 4),
+        "recall": round(metrics.box.mr, 4),
+        "inferensi_ms": round(metrics.speed["inference"], 2),
+        "waktu_latih_menit": round(training_minutes, 2),
+        "imgsz": config["imgsz"],
+        "bobot": best_weights.as_posix(),
     }
 
 
-# E1: baseline pretrained, imgsz=416
-hasil = [
-    latih(
-        "E1_final",
-        f"{args.model}.pt",
-        True,
-    ),
-
-    # E3: pretrained yang sama, hanya imgsz diubah menjadi 640
-    latih(
-        "E3_final",
-        f"{args.model}.pt",
-        True,
-        **{kunci: nilai},
-    ),
+results = [
+    train_experiment("E1_final", f"{args.model}.pt", True),
+    train_experiment("E3_final", f"{args.model}.pt", True, **{key: value}),
 ]
 
-
-garis = "=" * 90
-baris = [
-    garis,
-    "PRAKTIK TERPADU MINGGU 4-7 - RET503",
-    garis,
+dataset_root = data_yaml.parent
+fingerprint = dataset_fingerprint(dataset_root)
+lines = [
+    "=" * 86,
+    "HASIL EKSPERIMEN YOLO — HUMANOID SOCCER",
+    "=" * 86,
     f"NIM / Nama    : {args.nim} / {args.nama}",
     f"Waktu         : {datetime.now():%d-%m-%Y %H:%M:%S}",
     f"Komputer/user : {platform.node()} / {getpass.getuser()}",
-    f"Dataset       : {DATA.parent}",
-    f"Sidik jari    : {sidik_jari_dataset(DATA.parent)}",
-    f"Pengaturan    : model {args.model}, epochs {args.epochs}, "
-    f"imgsz {args.imgsz}, batch {args.batch}, device {args.device}",
-    garis,
-    f"{'Eksperimen':18s}{'Perubahan':15s}{'mAP50':>9s}"
-    f"{'mAP50-95':>11s}{'P':>8s}{'R':>8s}"
-    f"{'ms':>8s}{'menit':>9s}",
+    f"Dataset       : {dataset_root}",
+    f"Sidik jari    : {fingerprint}",
+    f"Model         : {args.model} | epochs={args.epochs} | batch={args.batch} | device={args.device}",
+    "=" * 86,
+    f"{'Eksperimen':18s}{'imgsz':>8s}{'mAP50':>10s}{'mAP50-95':>11s}{'P':>9s}{'R':>9s}{'ms':>9s}{'menit':>9s}",
 ]
-
-for r in hasil:
-    baris.append(
-        f"{r['eksperimen']:18s}{r['perubahan']:15s}"
-        f"{r['mAP50']:9.3f}{r['mAP50-95']:11.3f}"
-        f"{r['precision']:8.3f}{r['recall']:8.3f}"
-        f"{r['inferensi_ms']:8.1f}"
-        f"{r['waktu_latih_menit']:9.1f}"
+for result in results:
+    lines.append(
+        f"{result['eksperimen']:18s}{result['imgsz']:8d}{result['mAP50']:10.4f}"
+        f"{result['mAP50-95']:11.4f}{result['precision']:9.4f}{result['recall']:9.4f}"
+        f"{result['inferensi_ms']:9.2f}{result['waktu_latih_menit']:9.2f}"
     )
-
-baris += [
-    garis,
-    "Pemilihan model dilakukan berdasarkan mAP50-95 pada data validasi.",
-    "Evaluasi TEST dilakukan terpisah setelah model final ditentukan.",
-    garis,
+lines += [
+    "=" * 86,
+    "Metrik di atas berasal dari split validation. Evaluasi test dilakukan dengan skrip terpisah.",
+    "=" * 86,
 ]
+report_text = "\n".join(lines) + "\n"
+print("\n" + report_text)
 
-laporan = "\n".join(baris)
-print("\n" + laporan)
+txt_path = report_dir / f"hasil_praktik_{args.nim}_E1_E3_final.txt"
+csv_path = report_dir / f"hasil_praktik_{args.nim}_E1_E3_final.csv"
+txt_path.write_text(report_text, encoding="utf-8")
+with csv_path.open("w", newline="", encoding="utf-8") as csv_file:
+    writer = csv.DictWriter(csv_file, fieldnames=list(results[0].keys()))
+    writer.writeheader()
+    writer.writerows(results)
 
-Path(f"hasil_praktik_{args.nim}_E1_E3_final.txt").write_text(
-    laporan + "\n", encoding="utf-8"
-)
-
-with open(
-    f"hasil_praktik_{args.nim}_E1_E3_final.csv",
-    "w",
-    newline="",
-    encoding="utf-8",
-) as f:
-    w = csv.DictWriter(f, fieldnames=list(hasil[0].keys()))
-    w.writeheader()
-    w.writerows(hasil)
-
-print(
-    f"\nLaporan tersimpan untuk NIM {args.nim}."
-    f"\nGrafik dan bobot model berada di: {PROJECT}"
-)
+print(f"Laporan TXT: {txt_path}")
+print(f"Laporan CSV: {csv_path}")
+print(f"Grafik dan bobot lokal: {project_dir}")

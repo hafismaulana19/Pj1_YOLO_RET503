@@ -1,7 +1,10 @@
-path: ../dataset_v1
+# Konfigurasi dataset untuk eksperimen Humanoid Soccer.
+# Folder dataset tidak disimpan di GitHub; buat secara lokal melalui scripts/.
+path: ../dataset_humanoid_soccer
 train: images/train
 val: images/val
 test: images/test
 names:
-  0: MG90S
-  1: PCA9685
+  0: ball
+  1: robot
+  2: goalpost

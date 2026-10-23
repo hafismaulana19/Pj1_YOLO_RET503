@@ -1,0 +1,23 @@
+# Dataset gambar/anotasi dan unduhan lokal
+dataset_yolo/
+dataset_humanoid_soccer/
+dataset_v1*/
+dataset_yolo_v*/
+coco_unduhan/
+TORSO_21_dataset/
+*.zip
+
+# Artefak training dan model (simpan lokal)
+hasil_praktik/
+runs/
+weights/
+*.pt
+*.onnx
+
+# Cache dan environment
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.env
+cek_visual/
