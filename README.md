@@ -10,6 +10,22 @@ Repositori praktikum RET503 untuk eksperimen deteksi objek **Humanoid Soccer** m
 - **Perangkat pelatihan:** CPU
 - **Sumber dataset:** [bit-bots/TORSO_21_dataset](https://github.com/bit-bots/TORSO_21_dataset)
 
+## Hasil Praktik E1 dan E3
+
+Ringkasan metrik validasi dari file `Laporan/hasil_praktik_4222411001_E1_E3_final.csv`:
+
+| Eksperimen | Perubahan | Pretrained | mAP50 | mAP50-95 | Precision | Recall | Inferensi (ms) | Waktu latih (menit) | imgsz |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|
+| E1_final | - | Ya | 0.8200 | 0.5754 | 0.9109 | 0.7609 | 10.88 | 24.59 | 416 |
+| E3_final | imgsz=640 | Ya | 0.8686 | 0.6252 | 0.8902 | 0.8283 | 24.18 | 57.40 | 640 |
+
+E3 memperoleh mAP50, mAP50-95, dan recall validasi yang lebih tinggi, sedangkan E1 memiliki precision lebih tinggi, inferensi yang lebih cepat, serta waktu latih yang lebih singkat. Hasil evaluasi pada split test disajikan terpisah di [hasil_test_humanoid_soccer.csv](Laporan/hasil_test_humanoid_soccer.csv).
+
+File hasil praktik:
+- [CSV metrik E1 dan E3](Laporan/hasil_praktik_4222411001_E1_E3_final.csv)
+- [Laporan teks E1 dan E3](Laporan/hasil_praktik_4222411001_E1_E3_final.txt)
+- [CSV hasil evaluasi test](Laporan/hasil_test_humanoid_soccer.csv)
+
 ## Hasil Eksperimen
 
 ### E1 — Input 416 px
