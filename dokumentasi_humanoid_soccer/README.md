@@ -49,21 +49,25 @@ E3 menghasilkan mAP50 dan mAP50-95 validasi yang lebih tinggi daripada E1. Namun
 
 ## Hasil Evaluasi pada Data TEST
 
-Evaluasi dilakukan secara terpisah menggunakan data TEST yang terdiri dari 20 gambar dan 38 objek.
+Evaluasi dilakukan secara terpisah menggunakan data TEST yang terdiri dari 20 gambar dan 38 objek. Kedua eksperimen dievaluasi menggunakan data TEST yang sama.
 
 | Metrik | E1 (416 piksel) | E3 (640 piksel) |
 |---|---:|---:|
+| Precision | 0.8990 | 0.8394 |
+| Recall | 0.8080 | 0.7333 |
 | mAP50 | 0.8723 | 0.7436 |
-| mAP50-95 | 0.5886 | 0.5495 |
-| Precision | 0.8990 | Belum dicatat |
-| Recall | 0.8080 | Belum dicatat |
+| mAP50–95 | 0.5886 | 0.5495 |
+| Waktu inferensi per gambar | 10.6 ms | 22.9 ms |
 
-Berdasarkan hasil pengujian, E1 memperoleh mAP50 dan mAP50-95 lebih tinggi daripada E3. Hasil ini berbeda dari evaluasi validasi, ketika E3 memperoleh nilai mAP yang lebih tinggi. Perbedaan tersebut menunjukkan bahwa ukuran input yang lebih besar tidak selalu menghasilkan performa yang lebih baik pada data pengujian.
+### Analisis Hasil TEST
 
-Hasil ini hanya berlaku untuk dataset dan konfigurasi eksperimen yang digunakan. Jumlah data TEST yang terbatas perlu diperhatikan saat menarik kesimpulan.
+Berdasarkan evaluasi pada data TEST, E1 memperoleh nilai Precision, Recall, mAP50, dan mAP50–95 yang lebih tinggi dibandingkan E3. E1 juga memiliki waktu inferensi per gambar yang lebih singkat pada pengujian ini.
+
+Hasil tersebut berbeda dari hasil validasi yang sebelumnya menunjukkan performa E3 lebih tinggi pada beberapa metrik. Perbedaan ini menunjukkan bahwa hasil evaluasi pada data validasi dan data TEST tidak selalu sama. Ukuran input yang lebih besar tidak otomatis menghasilkan performa yang lebih baik pada data yang belum pernah digunakan dalam pelatihan.
+
+Hasil ini berlaku untuk konfigurasi eksperimen dan dataset yang digunakan. Jumlah data TEST yang terbatas, yaitu 20 gambar, perlu dipertimbangkan ketika menarik kesimpulan.
 
 ## Struktur Dokumentasi
+
 - `E1/`: grafik, confusion matrix, CSV, dan contoh prediksi E1.
 - `E3/`: grafik, confusion matrix, CSV, dan contoh prediksi E3.
-
-Catatan: hasil test yang dicantumkan di atas adalah hasil evaluasi E3. Hasil test E1 belum dicantumkan.
