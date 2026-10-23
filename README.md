@@ -1,6 +1,6 @@
 # Humanoid Soccer — YOLO Object Detection
 
-Repositori praktikum RET503 untuk eksperimen deteksi objek **Humanoid Soccer** menggunakan model YOLO26n pretrained.
+Repositori praktikum RET503 untuk eksperimen deteksi objek **Humanoid Soccer** menggunakan YOLO26n pretrained.
 
 ## Ringkasan Proyek
 

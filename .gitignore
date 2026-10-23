@@ -9,8 +9,8 @@ venv/
 .env
 .env.*
 
-# Downloaded source datasets and temporary archives.
-# Keep the curated dataset/ folder tracked.
+# Downloaded source datasets and temporary archives
+# The curated dataset/ folder in this repository remains tracked.
 TORSO_21_dataset/
 coco_unduhan/
 *.zip
