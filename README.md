@@ -1,24 +1,20 @@
 # Humanoid Soccer — YOLO Object Detection
 
-Repositori praktikum RET503 untuk deteksi objek **Humanoid Soccer** menggunakan YOLO26n pretrained.
+Repositori praktikum RET503 untuk eksperimen deteksi objek **Humanoid Soccer** menggunakan model YOLO26n pretrained.
 
 ## Ringkasan Proyek
 
-- **Dataset:** gambar kondisi nyata (*reality*) dari dataset sumber bit-bots
-- **Subset eksperimen:** 200 gambar
-- **Kelas:** `ball`, `robot`, `goalpost`
-- **Pembagian:** 140 train, 40 validation, 20 test
-- **Model:** YOLO26n pretrained
-- **Eksperimen:** E1 (imgsz 416) dan E3 (imgsz 640)
+- **Kelas deteksi:** `ball`, `robot`, `goalpost`
+- **Subset eksperimen:** 200 gambar — 140 train, 40 validation, 20 test
+- **Eksperimen:** E1 (`imgsz=416`) dan E3 (`imgsz=640`)
 - **Perangkat pelatihan:** CPU
+- **Sumber dataset:** [bit-bots/TORSO_21_dataset](https://github.com/bit-bots/TORSO_21_dataset)
 
-## Hasil Visual Eksperimen
+## Hasil Eksperimen
 
 ### E1 — Input 416 px
 
 ![E1 training results](<Eksperimen E1 dan E3/E1/results.png>)
-
-Contoh prediksi validasi E1:
 
 ![E1 validation predictions](<Eksperimen E1 dan E3/E1/val_batch0_pred.jpg>)
 
@@ -26,13 +22,9 @@ Contoh prediksi validasi E1:
 
 ![E3 training results](<Eksperimen E1 dan E3/E3/results.png>)
 
-Contoh prediksi validasi E3:
-
 ![E3 validation predictions](<Eksperimen E1 dan E3/E3/val_batch0_pred.jpg>)
 
-## Ringkasan Metrik
-
-### Validasi
+### Metrik Validasi
 
 | Metrik | E1 · 416 px | E3 · 640 px |
 |---|---:|---:|
@@ -43,7 +35,7 @@ Contoh prediksi validasi E3:
 | Inferensi per gambar | 10.88 ms | 24.18 ms |
 | Waktu pelatihan | 24.59 menit | 57.40 menit |
 
-### Test
+### Metrik Test
 
 | Metrik | E1 · 416 px | E3 · 640 px |
 |---|---:|---:|
@@ -53,37 +45,57 @@ Contoh prediksi validasi E3:
 | mAP50–95 | 0.5886 | 0.5495 |
 | Inferensi per gambar | 10.6 ms | 22.9 ms |
 
-Pada validasi, E3 memperoleh recall, mAP50, dan mAP50–95 lebih tinggi, tetapi lebih lambat. Pada test subset, E1 memperoleh nilai lebih tinggi di semua metrik deteksi yang dicatat dan inferensi yang lebih cepat. Perlu diperhatikan bahwa test hanya berisi 20 gambar (38 objek), sehingga hasil ini terbatas pada subset praktikum dan bukan jaminan performa pada semua kondisi.
+Pada validasi, E3 mendapat recall, mAP50, dan mAP50–95 lebih tinggi, tetapi lebih lambat. Pada test subset, E1 memperoleh nilai lebih tinggi pada metrik yang dicatat dan inferensi lebih cepat. Karena test hanya mencakup 20 gambar (38 objek), hasil ini terbatas pada subset praktikum.
 
-## Menyiapkan Dataset
+## Struktur Repository
 
-Dataset disimpan di folder `dataset/` pada repositori. File konfigurasi dataset tersedia di `dataset/data.yaml`.
+```text
+Pj1_YOLO_RET503/
+├── dataset/                 # Gambar, label, dan data.yaml untuk eksperimen
+├── data_proyek/             # Panduan proyek dan konfigurasi referensi
+├── Eksperimen E1 dan E3/    # Grafik serta hasil eksperimen E1 dan E3
+│   ├── E1/
+│   └── E3/
+├── Laporan/                 # Rekap hasil praktikum CSV/TXT
+├── Scripts/                 # Skrip persiapan, validasi, training, evaluasi
+├── .gitignore               # Aturan file lokal yang tidak dilacak Git
+└── README.md                # Dokumentasi utama
+```
 
-Sumber dataset: [bit-bots/TORSO_21_dataset](https://github.com/bit-bots/TORSO_21_dataset). Nama proyek ini **Humanoid Soccer**; TORSO_21_dataset hanya dicantumkan sebagai sumber data. Pastikan mematuhi lisensi dan ketentuan atribusi dataset sumber.
+## Isi Folder
+
+- **`dataset/`** — gambar, anotasi, dan konfigurasi dataset yang digunakan.
+- **`data_proyek/`** — panduan sumber data dan konfigurasi referensi.
+- **`Eksperimen E1 dan E3/`** — grafik training, confusion matrix, `results.csv`, serta contoh prediksi.
+- **`Laporan/`** — rekap metrik praktikum dan hasil test.
+- **`Scripts/`** — skrip persiapan data, validasi anotasi, konversi, split, training, dan evaluasi.
 
 ## Menjalankan Proyek
 
-Pasang dependensi utama:
+Pasang dependensi:
 
 ```bash
 python -m pip install ultralytics opencv-python pyyaml
 ```
 
-Alur kerja dari root repositori:
+Jalankan dari root repository:
 
-1. Periksa anotasi: `python scripts/01_cek_anotasi.py dataset`.
-2. Latih E1 dan E3: `python scripts/06_latih_E1_E3.py --nim 4222411001 --nama "HAFIS MAULANA SAPUTRA" --data dataset/data.yaml --device cpu`.
-3. Evaluasi test menggunakan `scripts/07_evaluasi_test.py` setelah bobot model terbaik tersedia.
+```bash
+python Scripts/01_cek_anotasi.py dataset
+python Scripts/06_latih_E1_E3.py --nim 4222411001 --nama "HAFIS MAULANA SAPUTRA" --data dataset/data.yaml --device cpu
+```
 
-Dataset, bobot model, cache, dan keluaran training disimpan lokal sesuai pengaturan Git. Lihat [dokumentasi eksperimen lengkap](<Eksperimen E1 dan E3/README.md>) dan tabel CSV di folder `laporan/`.
+Evaluasi setelah file bobot model tersedia (sesuaikan path bobot dengan hasil training lokal):
 
-## Struktur Repositori
+```bash
+python Scripts/07_evaluasi_test.py --data dataset/data.yaml --e1 path/ke/E1/best.pt --e3 path/ke/E3/best.pt --device cpu --output Laporan/hasil_test_humanoid_soccer.csv
+```
 
-- `data_proyek/` — konfigurasi dan panduan dataset
-- `dataset/` — gambar, label, dan konfigurasi dataset
-- `scripts/` — persiapan data, pengecekan anotasi, pelatihan, dan evaluasi
-- `Eksperimen E1 dan E3/` — grafik eksperimen dan contoh prediksi E1/E3
-- `laporan/` — ringkasan metrik CSV/TXT
+Bobot model, cache, dan output training disimpan lokal dan tidak perlu di-commit.
+
+## Catatan Dataset
+
+Nama proyek adalah **Humanoid Soccer**; TORSO_21_dataset merupakan sumber data. Patuhi lisensi dan ketentuan atribusi dari repository sumber. Split test adalah subset praktikum, bukan test set resmi sumber data.
 
 ## Identitas Praktikum
 

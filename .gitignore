@@ -1,22 +1,30 @@
-﻿# Dataset gambar/anotasi dan unduhan lokal
-dataset_yolo/
-dataset_v1*/
-dataset_yolo_v*/
-coco_unduhan/
-TORSO_21_dataset/
-*.zip
+# Python
+__pycache__/
+*.py[cod]
+*.pyo
 
-# Artefak training dan model (simpan lokal)
-hasil_praktik/
+# Virtual environments and local configuration
+.venv/
+venv/
+.env
+.env.*
+
+# Downloaded source datasets and temporary archives.
+# Keep the curated dataset/ folder tracked.
+TORSO_21_dataset/
+coco_unduhan/
+*.zip
+dataset_yolo/
+dataset_yolo_v*/
+dataset_v1*/
+
+# Training outputs and model weights
 runs/
+hasil_praktik/
 weights/
 *.pt
 *.onnx
 
-# Cache dan environment
-__pycache__/
-*.py[cod]
-.venv/
-venv/
-.env
+# Local validation previews / caches
 cek_visual/
+.cache/
