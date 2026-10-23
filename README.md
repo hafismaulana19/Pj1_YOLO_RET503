@@ -49,6 +49,8 @@ Pada validasi, E3 mendapat recall, mAP50, dan mAP50–95 lebih tinggi, tetapi le
 
 ## Struktur Repository
 
+Struktur folder yang digunakan dalam proyek:
+
 ```text
 Pj1_YOLO_RET503/
 ├── dataset/                 # Gambar, label, dan data.yaml untuk eksperimen
@@ -61,6 +63,23 @@ Pj1_YOLO_RET503/
 ├── .gitignore               # Aturan file lokal yang tidak dilacak Git
 └── README.md                # Dokumentasi utama
 ```
+
+### Tampilan folder di halaman GitHub
+
+GitHub mengurutkan folder dan file secara otomatis, bukan mengikuti urutan pada diagram di atas. Karena itu, daftar di halaman utama repository akan tampak seperti ini:
+
+```text
+Pj1_YOLO_RET503/
+├── Eksperimen E1 dan E3/
+├── Laporan/
+├── Scripts/
+├── data_proyek/
+├── dataset/
+├── .gitignore
+└── README.md
+```
+
+Urutan pada halaman GitHub adalah tampilan otomatis berdasarkan nama; struktur folder dan fungsinya tetap sama.
 ## Isi Folder
 
 - **`dataset/`** — gambar, anotasi, dan konfigurasi dataset yang digunakan.
