@@ -95,9 +95,33 @@ def main():
 
     if not candidates:
         raise SystemExit("Tidak ditemukan gambar berlabel ball/robot/goalpost. Periksa struktur dataset.")
+    # Pilih sekurang-kurangnya satu gambar untuk setiap kelas yang tersedia,
+    # baru isi sisa kuota secara acak. Ini mencegah kelas hilang hanya karena
+    # pemilihan acak, selama kuota cukup dan kelas ada pada kandidat valid.
     rng = random.Random(args.seed)
     rng.shuffle(candidates)
-    selected = candidates[:min(args.jumlah, len(candidates))]
+    target = min(args.jumlah, len(candidates))
+    selected = []
+    selected_set = set()
+
+    for class_name in CLASSES:
+        class_id = class_ids[class_name]
+        class_candidates = [
+            name for name in candidates
+            if name not in selected_set
+            and any(row[0] == class_id for row in valid_rows[name])
+        ]
+        if class_candidates and len(selected) < target:
+            chosen = class_candidates[0]
+            selected.append(chosen)
+            selected_set.add(chosen)
+
+    for image_name in candidates:
+        if len(selected) >= target:
+            break
+        if image_name not in selected_set:
+            selected.append(image_name)
+            selected_set.add(image_name)
 
     out = Path(args.out)
     if out.exists() and any(out.iterdir()):
