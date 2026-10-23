@@ -16,19 +16,19 @@ Repositori praktikum RET503 untuk deteksi objek **Humanoid Soccer** menggunakan 
 
 ### E1 — Input 416 px
 
-![E1 training results](dokumentasi_humanoid_soccer/E1/results.png)
+![E1 training results](Eksperimen E1 dan E3/E1/results.png)
 
 Contoh prediksi validasi E1:
 
-![E1 validation predictions](dokumentasi_humanoid_soccer/E1/val_batch0_pred.jpg)
+![E1 validation predictions](Eksperimen E1 dan E3/E1/val_batch0_pred.jpg)
 
 ### E3 — Input 640 px
 
-![E3 training results](dokumentasi_humanoid_soccer/E3/results.png)
+![E3 training results](Eksperimen E1 dan E3/E3/results.png)
 
 Contoh prediksi validasi E3:
 
-![E3 validation predictions](dokumentasi_humanoid_soccer/E3/val_batch0_pred.jpg)
+![E3 validation predictions](Eksperimen E1 dan E3/E3/val_batch0_pred.jpg)
 
 ## Ringkasan Metrik
 
@@ -73,17 +73,17 @@ Alur kerja dari root repositori:
 
 1. Buat subset YOLO dengan `scripts/00_preparasi_humanoid_soccer.py` sesuai instruksi di panduan dataset.
 2. Periksa anotasi: `python scripts/01_cek_anotasi.py dataset_yolo`.
-3. Bagi dataset: `python scripts/05_split_dataset_yolo.py dataset_yolo dataset_humanoid_soccer`.
-4. Latih E1 dan E3: `python scripts/06_latih_E1_E3.py --nim 4222411001 --nama "HAFIS MAULANA SAPUTRA" --data dataset_humanoid_soccer/data.yaml --device cpu`.
+3. Bagi dataset: `python scripts/05_split_dataset_yolo.py dataset_yolo dataset`.
+4. Latih E1 dan E3: `python scripts/06_latih_E1_E3.py --nim 4222411001 --nama "HAFIS MAULANA SAPUTRA" --data dataset/data.yaml --device cpu`.
 5. Evaluasi test menggunakan `scripts/07_evaluasi_test.py` setelah bobot model terbaik tersedia.
 
-Dataset, bobot model, cache, dan keluaran training disimpan lokal serta dikecualikan dari Git. Lihat [dokumentasi eksperimen lengkap](dokumentasi_humanoid_soccer/README.md) dan tabel CSV di folder `laporan/`.
+Dataset, bobot model, cache, dan keluaran training disimpan lokal serta dikecualikan dari Git. Lihat [dokumentasi eksperimen lengkap](Eksperimen E1 dan E3/README.md) dan tabel CSV di folder `laporan/`.
 
 ## Struktur Repositori
 
 - `data_proyek/` — konfigurasi dan panduan dataset
 - `scripts/` — persiapan data, pengecekan anotasi, pelatihan, dan evaluasi
-- `dokumentasi_humanoid_soccer/` — grafik eksperimen dan contoh prediksi E1/E3
+- `Eksperimen E1 dan E3/` — grafik eksperimen dan contoh prediksi E1/E3
 - `laporan/` — ringkasan metrik CSV/TXT
 
 ## Identitas Praktikum
