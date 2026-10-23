@@ -17,17 +17,22 @@ IMAGE_EXTENSIONS = {".jpg", ".jpeg", ".png"}
 
 
 def box_to_yolo(vector, width, height):
-    """Konversi TORSO-21 [[x1,y1],[x2,y2]] ke YOLO cx,cy,w,h ternormalisasi."""
-    if not isinstance(vector, list) or len(vector) != 2:
+    """Konversi vector TORSO-21 dua titik atau poligon empat titik ke YOLO."""
+    if not isinstance(vector, list) or len(vector) < 2:
         return None
     try:
-        x1, y1 = map(float, vector[0])
-        x2, y2 = map(float, vector[1])
-    except (TypeError, ValueError):
+        points = [(float(point[0]), float(point[1])) for point in vector]
+    except (TypeError, ValueError, IndexError):
+        return None
+    if len(points) < 2:
         return None
 
-    left, right = sorted((x1, x2))
-    top, bottom = sorted((y1, y2))
+    # TORSO-21 dapat menyimpan goalpost sebagai poligon empat titik.
+    # Ambil bounding rectangle dari semua titik untuk format YOLO.
+    xs = [point[0] for point in points]
+    ys = [point[1] for point in points]
+    left, right = min(xs), max(xs)
+    top, bottom = min(ys), max(ys)
     left, right = max(0.0, left), min(float(width), right)
     top, bottom = max(0.0, top), min(float(height), bottom)
     bw, bh = right - left, bottom - top
