@@ -148,3 +148,7 @@ python Scripts/07_evaluasi_test.py --data dataset/data.yaml --e1 path/ke/E1/best
 ```
 
 Bobot model, cache, dan output training disimpan lokal dan tidak perlu di-commit.
+
+## Penutup
+
+Proyek ini membandingkan dua konfigurasi YOLO26n untuk mendeteksi objek Humanoid Soccer melalui eksperimen E1 dan E3. Hasil validasi dan pengujian menunjukkan adanya perbedaan antara kualitas deteksi dan kecepatan komputasi pada masing-masing konfigurasi. Seluruh hasil, visualisasi, dan rekap metrik disediakan dalam repository ini sebagai dokumentasi proses eksperimen. Karena evaluasi test masih menggunakan subset berukuran terbatas, pengujian dengan data yang lebih beragam diperlukan sebelum menarik kesimpulan untuk penggunaan di kondisi nyata.
